@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		<flow name="google-chatbot-pocFlow" doc:id="16fbfc23-e766-4067-a66f-51f301195cd6" >
+		<set-variable value="#[payload]" doc:name="input msg" doc:id="f9066a33-2d82-40ce-91a5-8f3ebf8192a2" variableName="inputmsg" mimeType="application/json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="704a19b9-7397-4397-9d19-20cb8b84df59" message='inputmsg:#[vars.inputmsg]'/>
+		<try doc:name="Try" doc:id="ae3e8b0a-d79a-4f9b-a053-10b2fd7efb54" >
+			<os:retrieve doc:name="Retrieve thread name" doc:id="0c353436-d5eb-4bad-9111-87e22eb9c285" key="thread_id" objectStore="Object_store" target="thread_name">
+		</os:retrieve>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ba1911d5-4c7c-42d0-833d-ee8fc96b435d" >
+					<logger level="INFO" doc:name="Logger" doc:id="01eb8ecf-12d1-4ab7-baf6-d337255a77d5" message="#[error.detailedDescription]"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message" doc:id="0250f560-e8a9-49ad-ac7c-8b84e2e73462" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var thread=(thread:{
+	name:vars.thread_name
+}) if(vars.thread_name != "" and vars.thread_name != null)
+output application/json
+---
+if(thread != null) (vars.inputmsg default "") ++ (thread default "") else vars.inputmsg default ""]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="f0459852-2dcc-41ed-bc72-4776407851ba" message="before chatbot:#[payload]"/>
+		<http:request method="POST" doc:name="Send Bot Message" doc:id="98736f6a-ef5c-420a-8f3c-23d8ce924cee" url="${incoming.webhook.url}" doc:description="Using Webhhok URL we are sending messages from mule applications to google chat room for scenarios like server down which needs urgent action.">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/json",
+	"charset" : "UTF-8"
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="bcc25906-55aa-450e-935f-eacb3ae62d00" message="REsponse:#[payload]"/>
+		<os:store doc:name="Store thread name" doc:id="c7896666-ce67-4699-adc8-13b6d5be30ac" key="thread_id" objectStore="Object_store">
+			<os:value ><![CDATA[#[payload.thread.name]]]></os:value>
+		</os:store>
+	</flow>
+</mule>

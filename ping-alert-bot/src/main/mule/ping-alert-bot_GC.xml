@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="53ef029a-3c76-409e-8ef7-daab5f1b3411" file="ping.properties" />
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="7c9b806c-4cb5-4c24-9082-eeca6fb17142" entryTtl="${DIV.MULE.ENTRY.TTL}" entryTtlUnit="HOURS" />
+	
+	
+</mule>
