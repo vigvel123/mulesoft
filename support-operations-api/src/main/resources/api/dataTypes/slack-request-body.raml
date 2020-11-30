@@ -1,0 +1,27 @@
+#%RAML 1.0 DataType
+properties:
+  token:
+    description: slack integration app token
+    required: true
+    example:
+      "sL1Bz1Wia41TljOB04IP7uUr"
+    type: string
+  response_url:
+    description: Request URL to be used to send response message
+    required: true
+    example:
+      "https://hooks.slack.com/commands/1234/5678"
+    type: string
+  text:
+    description: input text from slack
+    required: true
+    example:
+      "google.com"
+    type: string
+  action:
+    description: which support operation to perform
+    required: true
+    example:
+      "ping"
+    type: string
+  

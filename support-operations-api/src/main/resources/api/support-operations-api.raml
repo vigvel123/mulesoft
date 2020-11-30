@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: Support Operations API
+description: This API connects with slack bot to call mule api without rest agents like postman.
+mediaType: 
+- application/json
+version: v1
+securedBy: Client-ID-Enforcement
+securitySchemes:
+  Client-ID-Enforcement : !include securitySchemes/customTokenSecurity.raml
+types:
+  success: !include dataTypes/ping-success.raml
+  slack-request-body: !include dataTypes/slack-request-body.raml
+/operations:
+  post:
+    description: Sends the input to the Net Tools API or Cloudhub Operations API based on action field value.
+    body:
+      application/json:
+       type: slack-request-body
+    responses:
+      201:
+        body:
+          application/json:
+            type: success

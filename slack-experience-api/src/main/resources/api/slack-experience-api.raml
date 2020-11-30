@@ -1,0 +1,32 @@
+#%RAML 1.0
+title: Slack Experience API
+description: This API connects with slack bot to call mule api without rest agents like postman.
+mediaType: 
+- application/json
+version: v2
+securedBy: Client-ID-Enforcement
+securitySchemes:
+  Client-ID-Enforcement : !include securitySchemes/customTokenSecurity.raml
+types:
+  success: !include dataTypes/ping-success.raml
+  slack-request-body: !include dataTypes/slack-request-body.raml
+/support-activity:
+  post:
+    description: Sends the input to the Support Operations Process API 
+    queryParameters:
+      action:
+        enum:
+          - ping
+          - start
+          - stop
+          - update
+          - restart
+        required: true
+    body:
+      application/x-www-form-urlencoded:
+       type: slack-request-body
+    responses:
+      201:
+        body:
+          application/json:
+            type: success

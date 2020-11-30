@@ -1,0 +1,22 @@
+#%RAML 1.0
+title: Ping API
+version: 2.0
+securedBy: Client-ID-Enforcement
+securitySchemes:
+  Client-ID-Enforcement : !include securitySchemes/customTokenSecurity.raml
+description: The Ping API is used to ping the server host from mule runtime to find its connectivity status.
+types:
+  success: !include dataTypes/success.raml
+  request: !include dataTypes/request.raml
+
+/ping:
+  get:
+    description: Runs an ICMP test from the Mule host to the specified endpoint
+    body:
+      application/json:
+        type: request
+    responses: 
+      200:
+        body: 
+          text/plain:
+           type: success
